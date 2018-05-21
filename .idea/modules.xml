@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/3dsspp-batchmaker.iml" filepath="$PROJECT_DIR$/.idea/modules/3dsspp-batchmaker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/3dsspp-batchmaker_main.iml" filepath="$PROJECT_DIR$/.idea/modules/3dsspp-batchmaker_main.iml" group="3dsspp-batchmaker" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/3dsspp-batchmaker_test.iml" filepath="$PROJECT_DIR$/.idea/modules/3dsspp-batchmaker_test.iml" group="3dsspp-batchmaker" />
+    </modules>
+  </component>
+</project>
