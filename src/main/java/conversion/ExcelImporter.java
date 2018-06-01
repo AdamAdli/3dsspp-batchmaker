@@ -15,24 +15,18 @@ import java.util.List;
 
 public class ExcelImporter {
 
-    List<Trial> openFile(File file) throws IOException, InvalidFormatException {
+    public static Trial[] openFile(File file) throws IOException, InvalidFormatException {
         XSSFWorkbook workbook = new XSSFWorkbook(file);
         XSSFSheet sheet = workbook.getSheetAt(0);
         if (sheet != null) {
-            ArrayList<Trial> trials = new ArrayList<>();
             int rowCount = sheet.getLastRowNum() + 1;
+            ArrayList<Trial> trials = new ArrayList<>();
             for (int i = 1; i < rowCount; i++) {
                 XSSFRow row = sheet.getRow(i);
-                int colCount = row.getLastCellNum();
-                Trial trial = new Trial();
-                for (int j = 0; j < colCount; j++) {
-                    XSSFCell cell = row.getCell(j);
-                    trial.values[j] = (float) cell.getNumericCellValue();
-                }
-                trials.add(trial);
-                System.out.println(Arrays.toString(trial.values));
+                if (row == null || row.getCell(0) == null || row.getCell(0).getRawValue().isEmpty()) break;
+                else trials.add(Trial.fromRow(row));
             }
-            return trials;
+            return trials.toArray(new Trial[trials.size()]);
         }
         return null;
     }

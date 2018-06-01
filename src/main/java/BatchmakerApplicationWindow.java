@@ -1,3 +1,5 @@
+import conversion.BatchExporter;
+import conversion.ExcelImporter;
 import javafx.application.Application;
 import javafx.application.Platform;
 import model.Trial;
@@ -56,7 +58,7 @@ public class BatchmakerApplicationWindow extends JFrame  {
             public void actionPerformed(ActionEvent e) {
                 try {
                     File file = FileDialogUtil.openFileJFX(BatchmakerApplicationWindow.this, "Open Excel File", JFXFileExtFilter.EXCEL_XLSX);
-                    if (file != null) openFile(file);
+                    if (file != null) System.out.println(BatchExporter.createBatch(ExcelImporter.openFile(file)));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(BatchmakerApplicationWindow.this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -66,25 +68,6 @@ public class BatchmakerApplicationWindow extends JFrame  {
 
         com.sun.javafx.application.PlatformImpl.startup(()->{});
         setVisible(true);
-    }
-
-    void openFile(File file) throws IOException, InvalidFormatException {
-        XSSFWorkbook workbook = new XSSFWorkbook(file);
-        XSSFSheet sheet = workbook.getSheetAt(0);
-        if (sheet != null) {
-            int rowCount = sheet.getLastRowNum() + 1;
-            logInfo("Sheet has " + rowCount + " rows.");
-            for (int i = 1; i < rowCount; i++) {
-                XSSFRow row = sheet.getRow(i);
-                int colCount = row.getLastCellNum();
-                Trial trial = new Trial();
-                for (int j = 0; j < colCount; j++) {
-                    XSSFCell cell = row.getCell(j);
-                    trial.values[j] = (float) cell.getNumericCellValue();
-                }
-                System.out.println(Arrays.toString(trial.values));
-            }
-        }
     }
 
 
