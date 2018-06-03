@@ -17,11 +17,11 @@
 
 <Pane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="javafx.FXBatchmakerApplication">
     <GridPane alignment="center" hgap="10" vgap="10">
-        <padding><Insets bottom="10.0" left="25.0" right="25.0" top="25.0" /></padding>
+        <padding><Insets bottom="10.0" left="25.0" right="25.0" top="30.0" /></padding>
 
-        <Text text="Welcome" GridPane.columnSpan="2" GridPane.rowIndex="1">
+        <Text text="Convert Excel Files to 3DSSPP Batch Files" GridPane.columnSpan="2" GridPane.rowIndex="1">
             <font>
-                <Font name="Tahoma" size="20.0" />
+                <Font name="Tahoma" size="18.0" />
             </font>
         </Text>
 
@@ -68,19 +68,19 @@
          <RowConstraints />
         </rowConstraints>
     </GridPane>
-   <MenuBar minWidth="-Infinity" prefHeight="25.0" prefWidth="368.0">
+   <MenuBar maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="379.0">
      <menus>
        <Menu mnemonicParsing="false" text="File">
          <items>
-            <MenuItem fx:id="loadExcelMenuItem" onAction="#onExcelButtonClick" mnemonicParsing="false" text="Load Excel File" />
-            <MenuItem fx:id="saveBatchMenuItem" onAction="#onBatchButtonClick" disable="true" mnemonicParsing="false" text="Save Batch File" />
+            <MenuItem fx:id="loadExcelMenuItem" mnemonicParsing="false" onAction="#onExcelButtonClick" text="Load Excel File" />
+            <MenuItem fx:id="saveBatchMenuItem" disable="true" mnemonicParsing="false" onAction="#onBatchButtonClick" text="Save Batch File" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#quitApplication" text="Close" />
          </items>
        </Menu>
        <Menu mnemonicParsing="false" text="Help">
          <items>
-           <MenuItem onAction="#onAboutClick" mnemonicParsing="false" text="About" />
+           <MenuItem mnemonicParsing="false" onAction="#onAboutClick" text="About" />
          </items>
        </Menu>
      </menus>

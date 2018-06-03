@@ -19,6 +19,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Trial;
 import ui.LoadingJFXButton;
@@ -27,6 +28,9 @@ import util.JFXFileExtFilter;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.management.PlatformManagedObject;
 import java.util.logging.Logger;
 
@@ -38,12 +42,32 @@ public class FXBatchmakerApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Thread.setDefaultUncaughtExceptionHandler(FXBatchmakerApplication::showError);
         primaryStage.setTitle(WINDOW_TITLE);
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("FXBatchmakerApplication.fxml"));
-        Scene scene = new Scene(root, 358, 228);
+        Scene scene = new Scene(root, 369, 228);
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setResizable(false);
+    }
+
+    private static void showError(Thread t, Throwable e) {
+        System.err.println("***Default exception handler***");
+        if (Platform.isFxApplicationThread()) {
+            showErrorDialog(e);
+        } else {
+            //System.err.println(e.getStackTrace());
+            e.printStackTrace();
+            System.err.println("An unexpected error occurred in "+t);
+        }
+    }
+
+    private static void showErrorDialog(Throwable e) {
+        StringWriter errorMsg = new StringWriter();
+        e.printStackTrace(new PrintWriter(errorMsg));
+        Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        new Alert(Alert.AlertType.ERROR, errorMsg.toString(), ButtonType.OK).showAndWait();
     }
 
     private Trial[] loadedExcelTrials;
