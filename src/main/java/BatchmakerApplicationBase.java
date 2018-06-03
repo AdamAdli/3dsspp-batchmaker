@@ -2,15 +2,11 @@ import conversion.BatchExporter;
 import conversion.ExcelImporter;
 import javafx.application.Platform;
 import model.Trial;
-import org.apache.poi.xssf.eventusermodel.XSSFSheetXMLHandler;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import util.FileDialogUtil;
-import util.FileExtFilter;
 import util.JFXFileExtFilter;
 import util.SimpleAction;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -69,7 +65,7 @@ public abstract class BatchmakerApplicationBase extends JFrame  {
 
     protected Action loadExcelAction = new SimpleAction("Load Excel File", e -> {
         try {
-            File file = FileDialogUtil.openFileJFX(BatchmakerApplicationBase.this, "Open Excel File", JFXFileExtFilter.EXCEL_XLSX);
+            File file = FileDialogUtil.openFileJFXInSwing(BatchmakerApplicationBase.this, "Open Excel File", JFXFileExtFilter.EXCEL_XLSX);
             if (file != null) {
                 onLoadingExcel(file);
                 (new Thread(ExcelImporter.openFile2(file, trials -> {
@@ -85,7 +81,7 @@ public abstract class BatchmakerApplicationBase extends JFrame  {
 
     protected Action saveBatchAction = new SimpleAction("Save Batch File", e -> {
         try {
-            String filePath = FileDialogUtil.saveFileJFX(BatchmakerApplicationBase.this, "Save Batch File", JFXFileExtFilter.BATCH_TXT);
+            String filePath = FileDialogUtil.saveFileJFXInSwing(BatchmakerApplicationBase.this, "Save Batch File", JFXFileExtFilter.BATCH_TXT);
             if (filePath != null) {
                 onSavingBatch(filePath);
                 (new Thread(BatchExporter.saveToBatchFile(filePath, loadedExcelTrials, batch -> {

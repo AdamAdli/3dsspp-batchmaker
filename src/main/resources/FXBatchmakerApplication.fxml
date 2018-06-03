@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import ui.LoadingJFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          fx:controller="javafx.FXBatchmakerApplication"
+          alignment="center" hgap="10" vgap="10">
+    <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
+
+    <Text text="Welcome"
+          GridPane.columnIndex="0" GridPane.rowIndex="0"
+          GridPane.columnSpan="2">
+        <font>
+            <Font name="Tahoma" size="20.0"/>
+        </font>
+    </Text>
+
+    <Label text="1. Load an Excel file:"
+           GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+
+    <HBox spacing="10" alignment="bottom_right"
+          GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <LoadingJFXButton
+                text="Load Excel File"
+                fx:id="loadExcelBtn"
+                onAction="#onExcelButtonClick"
+                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    </HBox>
+
+    <Label text="2. Convert and save to a Batch file:"
+           GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+
+    <HBox spacing="10" alignment="bottom_right"
+          GridPane.columnIndex="1" GridPane.rowIndex="2">
+        <LoadingJFXButton
+                text="Save Batch File"
+                fx:id="saveBatchBtn"
+                onAction="#onBatchButtonClick"
+                disable="true"
+                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    </HBox>
+
+    <Label text="3. Manually run your batch file in 3DSSPP."
+           GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+</GridPane>

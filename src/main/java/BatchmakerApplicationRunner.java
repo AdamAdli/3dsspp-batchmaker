@@ -1,4 +1,8 @@
+import javafx.FXBatchmakerApplication;
+
 import javax.swing.*;
+
+import static javafx.application.Application.launch;
 
 public class BatchmakerApplicationRunner {
 
@@ -12,6 +16,8 @@ public class BatchmakerApplicationRunner {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        BatchmakerApplication window = new BatchmakerApplication();
+
+        launch(FXBatchmakerApplication.class, args);
+        //BatchmakerApplication window = new BatchmakerApplication();
     }
 }
