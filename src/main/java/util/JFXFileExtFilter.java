@@ -4,6 +4,7 @@ import javafx.stage.FileChooser;
 
 public class JFXFileExtFilter {
     public static final FileChooser.ExtensionFilter EXCEL_XLSX = new FileChooser.ExtensionFilter("Excel", "*.xlsx");
+    public static final FileChooser.ExtensionFilter BATCH_TXT = new FileChooser.ExtensionFilter("3DSSPP Batch", "*.txt");
     public static final FileChooser.ExtensionFilter LOG_TEXT = new FileChooser.ExtensionFilter("Text", "*.log");
     public static final FileChooser.ExtensionFilter LOG_CSV = new FileChooser.ExtensionFilter("CSV", "*.csv");
     public static final FileChooser.ExtensionFilter COBWEB3D_XML = new FileChooser.ExtensionFilter("COBWEB3D Simulation", "*.xml", "*.XML");
