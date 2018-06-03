@@ -8,12 +8,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -34,42 +32,15 @@ import java.util.logging.Logger;
 
 public class FXBatchmakerApplication extends Application {
 
-    public static final String WINDOW_TITLE = "3DSSPP Batchmaker";
+    public static final String WINDOW_TITLE = "3DSSPP BatchMaker";
 
     public final Logger logger = Logger.getLogger("BatchmakerApplicationBase");
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle(WINDOW_TITLE);
-        /*GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
-
-        Scene scene = new Scene(grid, 300, 275);
-        primaryStage.setScene(scene);
-
-        Text scenetitle = new Text("Welcome");
-        scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
-        grid.add(scenetitle, 0, 0, 2, 1);
-
-        Label stepOne = new Label("1. Load an excel file:");
-        grid.add(stepOne, 0, 1);
-
-        LoadingJFXButton btn = new LoadingJFXButton("Load Excel File");
-        HBox hbBtn = new HBox(10);
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-        hbBtn.getChildren().add(btn);
-
-        btn.setOnAction(e ->{
-            btn.showProgress();
-        });
-
-        grid.add(hbBtn, 1, 1);*/
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("FXBatchmakerApplication.fxml"));
-        Scene scene = new Scene(root, 400, 275);
-
+        Scene scene = new Scene(root, 358, 228);
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setResizable(false);
@@ -79,29 +50,49 @@ public class FXBatchmakerApplication extends Application {
 
     @FXML private LoadingJFXButton loadExcelBtn;
     @FXML private LoadingJFXButton saveBatchBtn;
+    @FXML private Label excelStatusLabel;
+    @FXML private Label batchStatusLabel;
+    @FXML private Label step2Label;
+    @FXML private Label step3Label;
 
-    @FXML private void initialize()
-    {
+    @FXML private MenuItem saveBatchMenuItem;
 
+    @FXML private void initialize() {
+        excelStatusLabel.setText(StatusNoExcelLoaded);
+        batchStatusLabel.setText(StatusNoBatchSaved);
+        saveBatchBtn.setDisable(true);
+        batchStatusLabel.setDisable(true);
+        saveBatchBtn.setDisable(true);
+    }
+
+    @FXML private void onAboutClick() {
+        new Alert(Alert.AlertType.NONE, "Version 0.1", ButtonType.OK).showAndWait();
     }
 
     void onLoadingExcel(File file) {
         loadExcelBtn.showProgress();
+        excelStatusLabel.setText(StatusLoadingExcelFile(file.getPath()));
     }
 
-    void onLoadedExcel(String name) {
+    void onLoadedExcel(File file) {
         loadExcelBtn.hideProgress();
+        excelStatusLabel.setText(StatusExcelLoaded(file.getPath()));
         saveBatchBtn.setDisable(false);
+        batchStatusLabel.setDisable(false);
+        step2Label.setDisable(false);
+        saveBatchMenuItem.setDisable(false);
+        step3Label.setDisable(true);
     }
 
-    protected void onSavingBatch(String file) {
+    protected void onSavingBatch(String fileName) {
         saveBatchBtn.showProgress();
-        //batchStatusLabel.setText(StatusSavingBatchFile(file));
+        batchStatusLabel.setText(StatusSavingBatchFile(fileName));
     }
 
-    protected void onSavedBatch(String name) {
+    protected void onSavedBatch(String fileName) {
         saveBatchBtn.hideProgress();
-        //batchStatusLabel.setText(StatusBatchFileSaved(name));
+        batchStatusLabel.setText(StatusBatchFileSaved(fileName));
+        step3Label.setDisable(false);
     }
 
     @FXML private void onExcelButtonClick()
@@ -113,7 +104,7 @@ public class FXBatchmakerApplication extends Application {
                 (new Thread(ExcelImporter.openFile2(file, trials -> {
                     Platform.runLater(() -> {
                         loadedExcelTrials = trials;
-                        onLoadedExcel(file.getName());
+                        onLoadedExcel(file);
                     });
                 }))).start();
             }
@@ -132,7 +123,7 @@ public class FXBatchmakerApplication extends Application {
                 (new Thread(BatchExporter.saveToBatchFile(filePath, loadedExcelTrials, batch -> {
                     Platform.runLater(() -> {
                         logInfo(batch);
-                        onSavedBatch("");
+                        onSavedBatch(filePath);
                     });
                 }))).start();
             }
@@ -141,7 +132,6 @@ public class FXBatchmakerApplication extends Application {
             new Alert(Alert.AlertType.ERROR, ex.getMessage(), ButtonType.OK).showAndWait();
         }
     }
-
     public void quitApplication() {
         Platform.exit();
         System.exit(0);
@@ -159,4 +149,19 @@ public class FXBatchmakerApplication extends Application {
         logger.severe(string);
     }
 
+    private static String StatusNoExcelLoaded = "Status: No Excel file loaded.";
+    private static String StatusLoadingExcelFile(String fileName) {
+        return "Status: Loading Excel file " + fileName + "...";
+    }
+    private static String StatusExcelLoaded(String fileName) {
+        return "Status: Loaded Excel file " + fileName;
+    }
+
+    private static String StatusNoBatchSaved = "Status: Convert and save to a Batch file!";
+    private static String StatusSavingBatchFile(String fileName) {
+        return "Status: Saving Batch file " + fileName + "...";
+    }
+    private static String StatusBatchFileSaved(String fileName) {
+        return "Status: Saved Batch file " + fileName;
+    }
 }

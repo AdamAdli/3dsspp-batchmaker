@@ -107,7 +107,7 @@ public class FileDialogUtil {
     public static String saveFileJFX(javafx.stage.Window parent, String title, FileChooser.ExtensionFilter... fileExtFilters) {
         File file = launchJFXFileChooser(false, parent, title, fileExtFilters);
         if (file != null) {
-            if (file.exists()) new Alert(Alert.AlertType.WARNING, "File \"" + file.getAbsolutePath() + file + "\" already exists, overwriting!", ButtonType.OK).showAndWait();
+            // if (file.exists()) new Alert(Alert.AlertType.WARNING, "File \"" + file.getAbsolutePath() + file + "\" already exists, overwriting!", ButtonType.OK).showAndWait();
             return file.getAbsolutePath();
         }
         return null;
