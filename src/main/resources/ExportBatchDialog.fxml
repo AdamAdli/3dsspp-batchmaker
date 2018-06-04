@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<GridPane alignment="center" hgap="10" prefHeight="200.0" prefWidth="312.0" vgap="10" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ExportBatchDialog">
+    <padding><Insets bottom="10.0" left="25.0" right="25.0" top="10.0" /></padding>
+    <Text layoutX="35.0" layoutY="68.0" text="Save Batch File" GridPane.columnSpan="2">
+        <font>
+            <Font name="Tahoma" size="18.0" />
+        </font>
+    </Text>
+
+    <Label text="Analyst Name:" GridPane.rowIndex="2">
+        <font>
+            <Font size="14.0" />
+        </font></Label>
+
+    <HBox alignment="bottom_right" maxWidth="1.7976931348623157E308" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <TextField fx:id="analystTextField" promptText="Enter a name..." />
+    </HBox>
+   <Label layoutX="35.0" layoutY="76.0" text="Company Name:" GridPane.rowIndex="3">
+      <font>
+         <Font size="14.0" />
+      </font>
+   </Label>
+   <HBox alignment="bottom_right" layoutX="258.0" layoutY="73.0" maxWidth="1.7976931348623157E308" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="3">
+      <children>
+         <TextField fx:id="companyTextField" promptText="Enter a name..." />
+      </children>
+   </HBox>
+   <Label text="Enter optional metadata below." GridPane.columnSpan="2" GridPane.rowIndex="1" />
+    <HBox alignment="bottom_right" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="149.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+        <Button fx:id="saveBatchBtn" onAction="#close" prefHeight="25.0" prefWidth="95.0" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    </HBox>
+   <columnConstraints>
+      <ColumnConstraints />
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+      <RowConstraints />
+   </rowConstraints>
+</GridPane>

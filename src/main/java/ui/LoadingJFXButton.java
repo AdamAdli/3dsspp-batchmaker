@@ -4,13 +4,12 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 
-import javax.swing.*;
 import javafx.scene.image.Image;
 
 public class LoadingJFXButton extends Button {
     private static Image cachedLoadingImage;
     static {
-        ClassLoader cldr = LoadingJButton.class.getClassLoader();
+        ClassLoader cldr = LoadingJFXButton.class.getClassLoader();
         java.net.URL imageURL = cldr.getResource("loading_blue.gif");
         try {
             cachedLoadingImage = new Image(imageURL.toString());

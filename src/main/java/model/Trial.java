@@ -1,5 +1,6 @@
 package model;
 
+import conversion.ExcelImporter;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 
@@ -10,7 +11,6 @@ public class Trial {
     public static final int PERCENTILE_50 = 1;
     public static final int PERCENTILE_5 = 2;
     public static final int NO_PERCENTILE = 3;
-
 
     public int sex = SEX_M;
     public int percentile = PERCENTILE_50;
@@ -93,40 +93,73 @@ public class Trial {
         excelToHCRArg[5] = 5;
     }
 
-    public static Trial fromRow(XSSFRow row){
+    public static Trial fromRow(XSSFRow row) throws ExcelImporter.MalformedExcelException {
+        if (row.getLastCellNum() < 64) throw new ExcelImporter.MalformedExcelException("Row " + row.getRowNum() + ": is missing columns!", row.getRowNum(), -1);
         Trial trial = new Trial();
         trial.sex = isCellMale(row.getCell(0)) ? SEX_M : SEX_F;
         trial.percentile = getCellPercentile(row.getCell(1));
         if (trial.percentile == NO_PERCENTILE) {
-            trial.height = (float) row.getCell(2).getNumericCellValue();
-            trial.weight = (float) row.getCell(3).getNumericCellValue();
+            try {
+                trial.height = (float) row.getCell(2).getNumericCellValue();
+                trial.weight = (float) row.getCell(3).getNumericCellValue();
+            } catch (IllegalStateException ex) {
+                throw new ExcelImporter.MalformedExcelException("Row " + row.getRowNum() + ": Height and Weight numeric values must be provided if percentile is 0!", row.getRowNum(), 2);
+            }
         }
-        for (int i = 0; i < excelToSegArg.length; i++) {
-            trial.segAngles[excelToSegArg[i]] = (int) row.getCell(i + 4).getNumericCellValue();
+        int cellNum = 4;
+        try {
+            for (int i = 0; i < excelToSegArg.length; i++, cellNum++) {
+                trial.segAngles[excelToSegArg[i]] = (int) row.getCell(cellNum).getNumericCellValue();
+            }
+            for (int i = 0; i < excelToHandloadsArg.length; i++, cellNum++) {
+                trial.handLoads[excelToHandloadsArg[i]] = (float) row.getCell(cellNum).getNumericCellValue();
+            }
+            for (int i = 0; i < excelToHCLArg.length; i++, cellNum++) {
+                trial.handCompLeft[excelToHCLArg[i]] = (float) row.getCell(cellNum).getNumericCellValue();
+            }
+            for (int i = 0; i < excelToHCRArg.length; i++, cellNum++) {
+                trial.handCompRight[excelToHCRArg[i]] = (float) row.getCell(cellNum).getNumericCellValue();
+            }
+        } catch (IllegalStateException ex) {
+            throw new ExcelImporter.MalformedExcelException("Row " + row.getRowNum() + ": non-numeric value at cell " + toName(cellNum + 1) + "!", row.getRowNum(), cellNum);
         }
-        for (int i = 0; i < excelToHandloadsArg.length; i++) {
-            trial.handLoads[excelToHandloadsArg[i]] = (float) row.getCell(i + 4 + excelToSegArg.length).getNumericCellValue();
-        }
-        for (int i = 0; i < excelToHCLArg.length; i++) {
-            trial.handCompLeft[excelToHCLArg[i]] = (float) row.getCell(i + 4 + excelToSegArg.length + excelToHandloadsArg.length).getNumericCellValue();
-        }
-        for (int i = 0; i < excelToHCRArg.length; i++) {
-            trial.handCompRight[excelToHCRArg[i]] = (float) row.getCell(i + 4 + excelToSegArg.length + excelToHandloadsArg.length + excelToHCLArg.length).getNumericCellValue();
-        }
+
         return trial;
     }
 
-    private static boolean isCellMale(XSSFCell cell) {
-        String value = cell.getRawValue();
-        return value.trim().toUpperCase().equals("M") || value.trim().equals("0");
+    private static boolean isCellMale(XSSFCell cell) throws ExcelImporter.MalformedExcelException {
+        try {
+            String value = cell.getStringCellValue();
+            if (value.trim().toUpperCase().equals("M")) return true;
+            else if (value.trim().toUpperCase().equals("F")) return false;
+            else throw new ExcelImporter.MalformedExcelException("Row " + cell.getRowIndex() + ": Sex must be 'M'/'0' or 'F'/'1'!", cell.getRowIndex(), cell.getColumnIndex());
+        } catch (IllegalStateException ex) {
+            int value = (int) cell.getNumericCellValue();
+            if (value == 0) return true;
+            else if (value == 1) return false;
+            else throw new ExcelImporter.MalformedExcelException("Row " + cell.getRowIndex() + ": Sex must be 'M'/'0' or 'F'/'1'!", cell.getRowIndex(), cell.getColumnIndex());
+        }
     }
 
-    private static int getCellPercentile(XSSFCell cell) {
-        int value = (int) cell.getNumericCellValue();
-        if (value == 0) return NO_PERCENTILE;
-        else if (value == 5) return PERCENTILE_5;
-        else if (value == 50) return PERCENTILE_50;
-        else if (value == 95) return PERCENTILE_95;
-        else return -1;
+    private static int getCellPercentile(XSSFCell cell) throws ExcelImporter.MalformedExcelException {
+        try {
+            int value = (int) cell.getNumericCellValue();
+            if (value == 0) return NO_PERCENTILE;
+            else if (value == 5) return PERCENTILE_5;
+            else if (value == 50) return PERCENTILE_50;
+            else if (value == 95) return PERCENTILE_95;
+            else throw new ExcelImporter.MalformedExcelException("Row " + cell.getRowIndex() + ": Percentile must be 0, 5, 50, or 95!", cell.getRowIndex(), cell.getColumnIndex());
+        } catch (IllegalStateException ex) {
+            throw new ExcelImporter.MalformedExcelException("Row " + cell.getRowIndex() + ": Percentile must be 0, 5, 50, or 95!", cell.getRowIndex(), cell.getColumnIndex());
+        }
+    }
+
+    public static String toName(int number) {
+        StringBuilder sb = new StringBuilder();
+        while (number-- > 0) {
+            sb.append((char)('A' + (number % 26)));
+            number /= 26;
+        }
+        return sb.reverse().toString();
     }
 }

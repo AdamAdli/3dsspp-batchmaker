@@ -1,24 +1,15 @@
-package javafx;
-
 import conversion.BatchExporter;
 import conversion.ExcelImporter;
+import conversion.ExcelTemplateExporter;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
+import javafx.scene.layout.Border;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Trial;
@@ -27,14 +18,13 @@ import util.FileDialogUtil;
 import util.JFXFileExtFilter;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.management.PlatformManagedObject;
+import javax.swing.event.HyperlinkListener;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Logger;
 
-public class FXBatchmakerApplication extends Application {
+public class FXBatchmakerApplication extends Application implements ExcelImporter.FailCallback, BatchExporter.FailCallback {
 
     public static final String WINDOW_TITLE = "3DSSPP BatchMaker";
 
@@ -42,13 +32,14 @@ public class FXBatchmakerApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Thread.setDefaultUncaughtExceptionHandler(FXBatchmakerApplication::showError);
+       //Thread.setDefaultUncaughtExceptionHandler(FXBatchmakerApplication::showError);
         primaryStage.setTitle(WINDOW_TITLE);
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("FXBatchmakerApplication.fxml"));
-        Scene scene = new Scene(root, 369, 228);
+        Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setResizable(false);
+
     }
 
     private static void showError(Thread t, Throwable e) {
@@ -56,7 +47,6 @@ public class FXBatchmakerApplication extends Application {
         if (Platform.isFxApplicationThread()) {
             showErrorDialog(e);
         } else {
-            //System.err.println(e.getStackTrace());
             e.printStackTrace();
             System.err.println("An unexpected error occurred in "+t);
         }
@@ -87,10 +77,13 @@ public class FXBatchmakerApplication extends Application {
         saveBatchBtn.setDisable(true);
         batchStatusLabel.setDisable(true);
         saveBatchBtn.setDisable(true);
+        step2Label.setDisable(true);
     }
 
     @FXML private void onAboutClick() {
-        new Alert(Alert.AlertType.NONE, "Version 0.1", ButtonType.OK).showAndWait();
+        Alert alert = new Alert(Alert.AlertType.NONE, "Version 0.1.1 developed by Adam Adli (adam@adli.ca).", ButtonType.OK);
+        alert.setTitle("About");
+        alert.showAndWait();
     }
 
     void onLoadingExcel(File file) {
@@ -103,6 +96,7 @@ public class FXBatchmakerApplication extends Application {
         excelStatusLabel.setText(StatusExcelLoaded(file.getPath()));
         saveBatchBtn.setDisable(false);
         batchStatusLabel.setDisable(false);
+        batchStatusLabel.setText(StatusNoBatchSaved);
         step2Label.setDisable(false);
         saveBatchMenuItem.setDisable(false);
         step3Label.setDisable(true);
@@ -125,12 +119,67 @@ public class FXBatchmakerApplication extends Application {
             File file = FileDialogUtil.openFileJFX(loadExcelBtn.getScene().getWindow(), "Open Excel File", JFXFileExtFilter.EXCEL_XLSX);
             if (file != null) {
                 onLoadingExcel(file);
-                (new Thread(ExcelImporter.openFile2(file, trials -> {
+                (new Thread(ExcelImporter.openFile(file, trials -> {
                     Platform.runLater(() -> {
                         loadedExcelTrials = trials;
                         onLoadedExcel(file);
                     });
-                }))).start();
+                }, this))).start();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showError(ex.getMessage());
+        }
+    }
+
+    @FXML private void onBatchButtonClick()
+    {
+        try {
+            ExportBatchDialog exportBatchDialog = new ExportBatchDialog();
+            exportBatchDialog.openWindow();
+            if (exportBatchDialog.analystName != null && exportBatchDialog.companyName != null) {
+                String filePath = FileDialogUtil.saveFileJFX(loadExcelBtn.getScene().getWindow(), "Save Batch File", JFXFileExtFilter.BATCH_TXT);
+                if (filePath != null) {
+                    onSavingBatch(filePath);
+                    (new Thread(BatchExporter.saveToBatchFile(filePath, loadedExcelTrials, exportBatchDialog.analystName, exportBatchDialog.companyName, batch -> {
+                        Platform.runLater(() -> {
+                            logInfo(batch);
+                            onSavedBatch(filePath);
+                        });
+                    }, this))).start();
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showError(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void onExcelFailed(String message) {
+        Platform.runLater(() -> {
+            loadedExcelTrials = null;
+            loadExcelBtn.hideProgress();
+            initialize();
+            showError(message);
+        });
+    }
+
+    @Override
+    public void onBatchFailed(String message) {
+        Platform.runLater(() -> {
+            saveBatchBtn.hideProgress();
+            batchStatusLabel.setText(StatusNoBatchSaved);
+            step3Label.setDisable(true);
+            showError(message);
+        });
+    }
+
+    @FXML private void onExportTemplate() {
+        try {
+            String filePath = FileDialogUtil.saveFileJFX(loadExcelBtn.getScene().getWindow(), "Save Excel Template", JFXFileExtFilter.EXCEL_XLSX);
+            if (filePath != null) {
+                (new Thread(ExcelTemplateExporter.exportTemplate(filePath, savedPath -> showMessage("Saved excel template at " + filePath),this::showError))).start();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -138,24 +187,14 @@ public class FXBatchmakerApplication extends Application {
         }
     }
 
-    @FXML private void onBatchButtonClick()
-    {
-        try {
-            String filePath = FileDialogUtil.saveFileJFX(loadExcelBtn.getScene().getWindow(), "Save Batch File", JFXFileExtFilter.BATCH_TXT);
-            if (filePath != null) {
-                onSavingBatch(filePath);
-                (new Thread(BatchExporter.saveToBatchFile(filePath, loadedExcelTrials, batch -> {
-                    Platform.runLater(() -> {
-                        logInfo(batch);
-                        onSavedBatch(filePath);
-                    });
-                }))).start();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, ex.getMessage(), ButtonType.OK).showAndWait();
-        }
+    public void showMessage(String message) {
+        Platform.runLater(() -> new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK).showAndWait());
     }
+
+    public void showError(String message) {
+        Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, message, ButtonType.OK).showAndWait());
+    }
+
     public void quitApplication() {
         Platform.exit();
         System.exit(0);
