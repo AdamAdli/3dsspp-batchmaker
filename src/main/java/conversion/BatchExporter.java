@@ -2,7 +2,6 @@ package conversion;
 
 import model.Trial;
 
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
 public class BatchExporter {

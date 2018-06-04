@@ -5,7 +5,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import ui.LoadingJFXButton;
 
 import java.io.IOException;
 
@@ -21,12 +20,13 @@ public class ExportBatchDialog {
         popup = new Stage();
         popup.initModality(Modality.APPLICATION_MODAL);
         popup.setTitle("Save Batch File");
+        popup.getIcons().add(FXBatchmakerApplication.icon);
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("ExportBatchDialog.fxml"));
         Scene scene = new Scene(root);
         popup.setScene(scene);
         popup.setOnCloseRequest(event -> {
-            analystName="";
-            companyName="";
+            analystName=null;
+            companyName=null;
         });
         popup.showAndWait();
         return analystName;

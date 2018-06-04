@@ -5,11 +5,13 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.Border;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Trial;
@@ -17,11 +19,9 @@ import ui.LoadingJFXButton;
 import util.FileDialogUtil;
 import util.JFXFileExtFilter;
 
-import javax.swing.*;
-import javax.swing.event.HyperlinkListener;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.logging.Logger;
 
 public class FXBatchmakerApplication extends Application implements ExcelImporter.FailCallback, BatchExporter.FailCallback {
@@ -30,16 +30,18 @@ public class FXBatchmakerApplication extends Application implements ExcelImporte
 
     public final Logger logger = Logger.getLogger("BatchmakerApplicationBase");
 
+    public static Image icon = new Image(FXBatchmakerApplication.class.getClassLoader().getResourceAsStream("twotone_build_black_18dp.png"));
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-       //Thread.setDefaultUncaughtExceptionHandler(FXBatchmakerApplication::showError);
+        Thread.setDefaultUncaughtExceptionHandler(FXBatchmakerApplication::showError);
         primaryStage.setTitle(WINDOW_TITLE);
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("FXBatchmakerApplication.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
-        primaryStage.show();
         primaryStage.setResizable(false);
-
+        primaryStage.getIcons().add(icon);
+        primaryStage.show();
     }
 
     private static void showError(Thread t, Throwable e) {
@@ -83,6 +85,7 @@ public class FXBatchmakerApplication extends Application implements ExcelImporte
     @FXML private void onAboutClick() {
         Alert alert = new Alert(Alert.AlertType.NONE, "Version 0.1.1 developed by Adam Adli (adam@adli.ca).", ButtonType.OK);
         alert.setTitle("About");
+        ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(icon);
         alert.showAndWait();
     }
 
@@ -188,11 +191,21 @@ public class FXBatchmakerApplication extends Application implements ExcelImporte
     }
 
     public void showMessage(String message) {
-        Platform.runLater(() -> new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK).showAndWait());
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+            alert.setTitle("Message");
+            ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(icon);
+            alert.showAndWait();
+        });
     }
 
     public void showError(String message) {
-        Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, message, ButtonType.OK).showAndWait());
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
+            alert.setTitle("Error");
+            ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(icon);
+            alert.showAndWait();
+        });
     }
 
     public void quitApplication() {

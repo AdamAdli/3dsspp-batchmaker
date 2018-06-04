@@ -1,7 +1,5 @@
 package conversion;
 
-import model.Trial;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
