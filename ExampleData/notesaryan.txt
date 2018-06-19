@@ -1,0 +1,17 @@
+Might need to change some of these options:
+
+	Anthropology:
+		Male to Female, Weight/Height percentile, etc.
+			Yes, batch file does give us the option to change percentiles and gender.
+		Does shoes work?
+			????	
+	
+	External Force:
+		We don't touch this, keep default.
+
+	When you go to print report option at the reports, 
+	you see that we can identify the outputs,
+	we want all of these outputs at the end of our analysis after each trial.
+		Output of 3DSSPP is not required by my program.
+		
+		

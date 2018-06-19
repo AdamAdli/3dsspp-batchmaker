@@ -25,8 +25,8 @@ public class ExportBatchDialog {
         Scene scene = new Scene(root);
         popup.setScene(scene);
         popup.setOnCloseRequest(event -> {
-            analystName=null;
-            companyName=null;
+            analystName="";
+            companyName="";
         });
         popup.showAndWait();
         return analystName;
@@ -35,7 +35,13 @@ public class ExportBatchDialog {
     @FXML private TextField analystTextField;
     @FXML private TextField companyTextField;
 
-    @FXML private void close() {
+    @FXML private void cancel() {
+        analystName=null;
+        companyName=null;
+        ((Stage)companyTextField.getScene().getWindow()).close();
+    }
+
+    @FXML private void save() {
         analystName = analystTextField.getText();
         companyName = companyTextField.getText();
         ((Stage)companyTextField.getScene().getWindow()).close();

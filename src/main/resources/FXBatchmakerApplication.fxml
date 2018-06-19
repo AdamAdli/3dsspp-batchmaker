@@ -1,31 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 <?import ui.LoadingJFXButton?>
-<BorderPane prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.121"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXBatchmakerApplication">
+
+<BorderPane prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXBatchmakerApplication">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem fx:id="loadExcelMenuItem" mnemonicParsing="false" onAction="#onExcelButtonClick"
-                                  text="Load Excel File"/>
-                        <MenuItem fx:id="saveBatchMenuItem" disable="true" mnemonicParsing="false"
-                                  onAction="#onBatchButtonClick" text="Save Batch File"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" onAction="#onExportTemplate" text="Export Excel Template"/>
-                        <SeparatorMenuItem mnemonicParsing="false"/>
-                        <MenuItem mnemonicParsing="false" onAction="#quitApplication" text="Close"/>
+                        <MenuItem fx:id="loadExcelMenuItem" mnemonicParsing="false" onAction="#onExcelButtonClick" text="Load Excel File" />
+                        <MenuItem fx:id="saveBatchMenuItem" disable="true" mnemonicParsing="false" onAction="#onBatchButtonClick" text="Save Batch File" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#onExportTemplate" text="Export Excel Template" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#quitApplication" text="Close" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#onAboutClick" text="About"/>
+                        <MenuItem mnemonicParsing="false" onAction="#onAboutClick" text="About" />
                     </items>
                 </Menu>
             </menus>
@@ -34,72 +42,65 @@
     <center>
         <GridPane alignment="center" hgap="10" vgap="10" BorderPane.alignment="CENTER">
             <padding>
-                <Insets bottom="10.0" left="25.0" right="25.0" top="10.0"/>
+                <Insets bottom="10.0" left="25.0" right="25.0" top="10.0" />
             </padding>
-            <Text layoutX="35.0" layoutY="68.0" text="Convert Excel Files to 3DSSPP Batch Files"
-                  GridPane.columnSpan="2">
+            <Text layoutX="35.0" layoutY="68.0" text="Convert Excel Files to 3DSSPP Batch Files" GridPane.columnSpan="2">
                 <font>
-                    <Font name="Tahoma" size="18.0"/>
+                    <Font name="Tahoma" size="18.0" />
                 </font>
             </Text>
             <TextFlow prefHeight="0.0" prefWidth="341.0" GridPane.columnSpan="2" GridPane.rowIndex="1">
                 <children>
-                    <Text text="Excel files must be formatted like the"/>
-                    <Hyperlink onAction="#onExportTemplate" text="provided template."/>
+                    <Text text="Excel files must be formatted like the" />
+                    <Hyperlink onAction="#onExportTemplate" text="provided template." />
                 </children>
             </TextFlow>
 
             <Label text="1. Load an Excel file:" GridPane.rowIndex="2">
                 <font>
-                    <Font size="14.0"/>
+                    <Font size="14.0" />
                 </font>
             </Label>
 
-            <HBox alignment="bottom_right" maxWidth="1.7976931348623157E308" spacing="10" GridPane.columnIndex="1"
-                  GridPane.rowIndex="2">
-                <LoadingJFXButton fx:id="loadExcelBtn" onAction="#onExcelButtonClick" prefHeight="25.0" prefWidth="95.0"
-                                  text="Load Excel File" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <HBox alignment="bottom_right" maxWidth="1.7976931348623157E308" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <LoadingJFXButton fx:id="loadExcelBtn" onAction="#onExcelButtonClick" prefHeight="25.0" prefWidth="95.0" text="Load Excel File" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             </HBox>
 
-            <Label fx:id="excelStatusLabel" text="Status: No Excel file loaded." GridPane.columnSpan="2"
-                   GridPane.rowIndex="3">
+            <Label fx:id="excelStatusLabel" text="Status: No Excel file loaded." GridPane.columnSpan="2" GridPane.rowIndex="3">
                 <opaqueInsets>
-                    <Insets/>
+                    <Insets />
                 </opaqueInsets>
             </Label>
 
             <Label fx:id="step2Label" disable="true" text="2. Convert and save to a Batch file:" GridPane.rowIndex="4">
                 <font>
-                    <Font size="14.0"/>
+                    <Font size="14.0" />
                 </font>
             </Label>
 
             <HBox alignment="bottom_right" spacing="10" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                <LoadingJFXButton fx:id="saveBatchBtn" disable="true" onAction="#onBatchButtonClick"
-                                  text="Save Batch File" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <LoadingJFXButton fx:id="saveBatchBtn" disable="true" onAction="#onBatchButtonClick" text="Save Batch File" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             </HBox>
 
-            <Label fx:id="batchStatusLabel" disable="true" text="Status: No Batch file saved." GridPane.columnSpan="2"
-                   GridPane.rowIndex="5"/>
+            <Label fx:id="batchStatusLabel" disable="true" text="Status: No Batch file saved." GridPane.columnSpan="2" GridPane.rowIndex="5" />
 
-            <Label fx:id="step3Label" disable="true" maxHeight="1.7976931348623157E308" prefHeight="24.0"
-                   text="3. Manually run your batch file in 3DSSPP." GridPane.columnSpan="2" GridPane.rowIndex="6">
+            <Label fx:id="step3Label" disable="true" maxHeight="1.7976931348623157E308" prefHeight="24.0" text="3. Manually run your batch file in 3DSSPP." GridPane.columnSpan="2" GridPane.rowIndex="6">
                 <font>
-                    <Font size="14.0"/>
+                    <Font size="14.0" />
                 </font>
             </Label>
             <columnConstraints>
-                <ColumnConstraints/>
-                <ColumnConstraints/>
+                <ColumnConstraints />
+                <ColumnConstraints />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
             </rowConstraints>
         </GridPane>
     </center>
