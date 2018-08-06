@@ -1,13 +1,11 @@
 3DSSPPBATCHFILE #
 DES 0 "Sample Batch" "Suzy Anybody" "Nothing very meaningful" "Company" #
-AUT 0 #
+AUT 1 #
 PAU 0 #
 ANT 1 3 64.2 115.0 #
 COM LHAND LA UA CL UL LL FT RHAND LA UA CL UL LL FT HD UNK LNK TR PL #
 JOA 90 0 0 90 0 90 -45 -20 15 90 -75 -90 -75 90 0 90 0 0 90 0 90 -45 -20 15 90 -75 -90 -75 90 0 0 0 0 0 0 0 0 90 0 0 0 0 #
 HAN 15 -20 85 22 -15 80 #
-EXP #
-AUT 1 #
 DES 0 "Loads A" "Suzy Anybody" "Hand loads case A" "Company" #
 HAN 15 -20 85 15 -15 80 #
 DES 0 "Loads B" "Suzy Anybody" "Hand loads case B" "Company" #

@@ -83,7 +83,7 @@ public class FXBatchmakerApplication extends Application implements ExcelImporte
     }
 
     @FXML private void onAboutClick() {
-        Alert alert = new Alert(Alert.AlertType.NONE, "Version 0.1.1 developed by Adam Adli (adam@adli.ca).", ButtonType.OK);
+        Alert alert = new Alert(Alert.AlertType.NONE, "Version 0.1.2 developed by Adam Adli (adam@adli.ca).", ButtonType.OK);
         alert.setTitle("About");
         ((Stage)alert.getDialogPane().getScene().getWindow()).getIcons().add(icon);
         alert.showAndWait();

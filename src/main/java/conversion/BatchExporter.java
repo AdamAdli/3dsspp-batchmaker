@@ -89,7 +89,7 @@ public class BatchExporter {
                 writer.print(trials[i].handCompRight[j]);
                 writer.print(" ");
             }
-            writer.print("#"); // No more new lines!
+            writer.println("#"); // No more new lines!
         }
         writer.flush();
         writer.close();
